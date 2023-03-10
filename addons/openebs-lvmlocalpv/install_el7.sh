@@ -141,7 +141,7 @@ verify_supported() {
 }
 
 init_log() {
-  INSTALL_LOG_PATH=/tmp/lvm-localpv_install-$(date +'%Y-%m-%d_%H-%M-%S').log
+  INSTALL_LOG_PATH=/tmp/openebs-lvmlocalpv_install-$(date +'%Y-%m-%d_%H-%M-%S').log
   if ! touch "${INSTALL_LOG_PATH}"; then
     error "Create log file ${INSTALL_LOG_PATH} error"
   fi

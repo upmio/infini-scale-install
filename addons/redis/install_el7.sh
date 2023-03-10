@@ -88,7 +88,7 @@ verify_supported() {
   HAS_CURL="$(type "curl" &>/dev/null && echo true || echo false)"
 
   if [[ -z "${REDIS_PWD}" ]]; then
-    error "DB_PWD MUST set in environment variable."
+    error "REDIS_PWD MUST set in environment variable."
   fi
 
   if [[ -z "${REDIS_NODE_NAMES}" ]]; then

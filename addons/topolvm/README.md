@@ -25,13 +25,13 @@ vgcreate local_HDD_VG {dev_name}
 
 ### 3. 设置必要的环境变量
 
-CONTROLLER_NODE_NAMES：指定安装controller pod的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
+TOPOLVM_CONTROLLER_NODE_NAMES：指定安装controller pod的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
 
-DATA_NODE_NAMES：指定LVM PV的工作负载节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
+TOPOLVM_DATA_NODE_NAMES：指定LVM PV的工作负载节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
 
-VG_NAME：指定Storageclass对应的VolumeGroup名称。
+TOPOLVM_VG_NAME：指定Storageclass对应的VolumeGroup名称。
 
-DEVICE_CLASSES_NAME：指定设备类型名称。
+TOPOLVM_DEVICE_CLASSES_NAME：指定设备类型名称。
 
 ```console
 export CONTROLLER_NODE_NAMES="topolvm-control-plan01"

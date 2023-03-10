@@ -2,21 +2,21 @@
 
 # You must be prepared as follows before run install.sh:
 #
-# 1. CONTROLLER_NODE_NAMES MUST be set as environment variable, for an example:
+# 1. TOPOLVM_CONTROLLER_NODE_NAMES MUST be set as environment variable, for an example:
 #
-#        export CONTROLLER_NODE_NAMES="master01,master02"
+#        export TOPOLVM_CONTROLLER_NODE_NAMES="master01,master02"
 #
-# 2. DATA_NODE_NAMES MUST be set as environment variable, for an example:
+# 2. TOPOLVM_DATA_NODE_NAMES MUST be set as environment variable, for an example:
 #
-#        export DATA_NODE_NAMES="node01,node02"
+#        export TOPOLVM_DATA_NODE_NAMES="node01,node02"
 #
-# 3. VG_NAME MUST be set as environment variable, for an example:
+# 3. TOPOLVM_VG_NAME MUST be set as environment variable, for an example:
 #
-#        export VG_NAME="local_HDD_VG"
+#        export TOPOLVM_VG_NAME="local_HDD_VG"
 #
-# 4. DEVICE_CLASSES_NAME MUST be set as environment variable, for an example:
+# 4. TOPOLVM_DEVICE_CLASSES_NAME MUST be set as environment variable, for an example:
 #
-#        export DEVICE_CLASSES_NAME="ssd"
+#        export TOPOLVM_DEVICE_CLASSES_NAME="ssd"
 #
 
 readonly NAMESPACE="topolvm-system"
@@ -73,8 +73,8 @@ install_topolvm() {
     --set controller.storageCapacityTracking.enabled=true \
     --set scheduler.enabled=false \
     --set webhook.podMutatingWebhook.enabled=false \
-    --set lvmd.deviceClasses[0].name="${DEVICE_CLASSES_NAME}" \
-    --set lvmd.deviceClasses[0].volume-group="${VG_NAME}" \
+    --set lvmd.deviceClasses[0].name="${TOPOLVM_DEVICE_CLASSES_NAME}" \
+    --set lvmd.deviceClasses[0].volume-group="${TOPOLVM_VG_NAME}" \
     --set lvmd.deviceClasses[0].default=true \
     --set lvmd.deviceClasses[0].spare-gb=10 \
     --set lvmd.nodeSelector."topolvm\.io/node"="enable" \
@@ -114,20 +114,20 @@ verify_supported() {
     error "kubectl label namespace kube-system failed, use kubectl  to check reason"
   }
 
-  if [[ -z "${VG_NAME}" ]]; then
-    error "VG_NAME MUST set in environment variable."
+  if [[ -z "${TOPOLVM_VG_NAME}" ]]; then
+    error "TOPOLVM_VG_NAME MUST set in environment variable."
   fi
 
-  if [[ -z "${DEVICE_CLASSES_NAME}" ]]; then
-    error "DEVICE_CLASSES_NAME MUST set in environment variable."
+  if [[ -z "${TOPOLVM_DEVICE_CLASSES_NAME}" ]]; then
+    error "TOPOLVM_DEVICE_CLASSES_NAME MUST set in environment variable."
   fi
 
-  if [[ -z "${CONTROLLER_NODE_NAMES}" ]]; then
-    error "CONTROLLER_NODE_NAMES MUST set in environment variable."
+  if [[ -z "${TOPOLVM_CONTROLLER_NODE_NAMES}" ]]; then
+    error "TOPOLVM_CONTROLLER_NODE_NAMES MUST set in environment variable."
   fi
 
   local control_node_array
-  IFS="," read -r -a control_node_array <<<"${CONTROLLER_NODE_NAMES}"
+  IFS="," read -r -a control_node_array <<<"${TOPOLVM_CONTROLLER_NODE_NAMES}"
   CONTROLLER_NDOE_COUNT=0
   for node in "${control_node_array[@]}"; do
     kubectl label node "${node}" 'topolvm.io/control-plane=enable' --overwrite &>/dev/null || {
@@ -136,12 +136,12 @@ verify_supported() {
     ((CONTROLLER_NDOE_COUNT++))
   done
 
-  if [[ -z "${DATA_NODE_NAMES}" ]]; then
-    error "DATA_NODE_NAMES MUST set in environment variable."
+  if [[ -z "${TOPOLVM_DATA_NODE_NAMES}" ]]; then
+    error "TOPOLVM_DATA_NODE_NAMES MUST set in environment variable."
   fi
 
   local data_node_array
-  IFS="," read -r -a data_node_array <<<"${DATA_NODE_NAMES}"
+  IFS="," read -r -a data_node_array <<<"${TOPOLVM_DATA_NODE_NAMES}"
   for node in "${data_node_array[@]}"; do
     kubectl label node "${node}" 'topolvm.io/node=enable' --overwrite &>/dev/null || {
       error "kubectl label node ${node} 'topolvm.io/node=enable' failed, use kubectl to check reason"

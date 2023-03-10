@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly NAMESPACE="cert-manger"
+readonly NAMESPACE="cert-manager"
 readonly CHART="jetstack/cert-manager"
 readonly RELEASE="cert-manager"
 readonly TIME_OUT_SECOND="600s"

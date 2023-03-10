@@ -17,7 +17,7 @@ curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addo
 等几分钟。 如果所有 cert-manager  pod 都在运行，则 cert-manager 将成功安装。
 
 ```console
-watch kubectl get --namespace cert-manager pods
+kubectl get --namespace cert-manager pods -w
 ```
 
 ## License

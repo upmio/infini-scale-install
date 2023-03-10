@@ -10,13 +10,13 @@
 #
 #        export DB_PWD="passwords"
 #
-# 3. STORAGECLASS_NAME MUST be set as environment variable, for an example:
+# 3. DB_STORAGECLASS_NAME MUST be set as environment variable, for an example:
 #
-#        export STORAGECLASS_NAME=""
+#        export DB_STORAGECLASS_NAME=""
 #
-# 4. STORAGE_SIZE_G MUST be set as environment variable, for an example:
+# 4. DB_PVC_SIZE_G MUST be set as environment variable, for an example:
 #
-#        export STORAGE_SIZE_G="50"
+#        export DB_PVC_SIZE_G="50"
 #
 # 5. DB_NODE_NAMES MUST be set as environment variable, for an example:
 #
@@ -74,8 +74,8 @@ install_mysql() {
     --set auth.username=''${DB_USER}'' \
     --set auth.password=''${DB_PWD}'' \
     --set architecture='standalone' \
-    --set persistence.storageClassName="${STORAGECLASS_NAME}" \
-    --set persistence.size=${PVC_SIZE_G}Gi \
+    --set persistence.storageClassName="${DB_STORAGECLASS_NAME}" \
+    --set persistence.size=${DB_PVC_SIZE_G}Gi \
     --set nodeAffinityPreset.type="hard" \
     --set nodeAffinityPreset.key="mysql\.node" \
     --set nodeAffinityPreset.values='{enable}' \
@@ -111,16 +111,16 @@ verify_supported() {
     error "DB_PWD MUST set in environment variable."
   fi
 
-  if [[ -z "${STORAGECLASS_NAME}" ]]; then
-    error "STORAGECLASS_NAME MUST set in environment variable."
+  if [[ -z "${DB_STORAGECLASS_NAME}" ]]; then
+    error "DB_STORAGECLASS_NAME MUST set in environment variable."
   fi
 
-  kubectl get storageclasses "${STORAGECLASS_NAME}" &>/dev/null || {
+  kubectl get storageclasses "${DB_STORAGECLASS_NAME}" &>/dev/null || {
     error "storageclass resources not all ready, use kubectl to check reason"
   }
 
-  if [[ -z "${PVC_SIZE_G}" ]]; then
-    error "PVC_SIZE_G MUST set in environment variable."
+  if [[ -z "${DB_PVC_SIZE_G}" ]]; then
+    error "DB_PVC_SIZE_G MUST set in environment variable."
   fi
 
   if [[ -z "${DB_NODE_NAMES}" ]]; then

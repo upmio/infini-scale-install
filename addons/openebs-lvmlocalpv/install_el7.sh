@@ -2,21 +2,21 @@
 
 # You must be prepared as follows before run install.sh:
 #
-# 1. CONTROLLER_NODE_NAMES MUST be set as environment variable, for an example:
+# 1. OPENEBS_CONTROLLER_NODE_NAMES MUST be set as environment variable, for an example:
 #
-#        export CONTROLLER_NODE_NAMES="master01,master02"
+#        export OPENEBS_CONTROLLER_NODE_NAMES="master01,master02"
 #
-# 2. DATA_NODE_NAMES MUST be set as environment variable, for an example:
+# 2. OPENEBS_DATA_NODE_NAMES MUST be set as environment variable, for an example:
 #
-#        export DATA_NODE_NAMES="node01,node02"
+#        export OPENEBS_DATA_NODE_NAMES="node01,node02"
 #
-# 4. STORAGECLASS_NAME MUST be set as environment variable, for an example:
+# 4. OPENEBS_STORAGECLASS_NAME MUST be set as environment variable, for an example:
 #
-#        export STORAGECLASS_NAME="openebs-lvmsc-hdd"
+#        export OPENEBS_STORAGECLASS_NAME="openebs-lvmsc-hdd"
 #
-# 3. VG_NAME MUST be set as environment variable, for an example:
+# 3. OPENEBS_VG_NAME MUST be set as environment variable, for an example:
 #
-#        export VG_NAME="local_HDD_VG"
+#        export OPENEBS_VG_NAME="local_HDD_VG"
 #
 
 readonly NAMESPACE="openebs"
@@ -96,32 +96,32 @@ verify_supported() {
   local HAS_CURL
   HAS_CURL="$(type "curl" &>/dev/null && echo true || echo false)"
 
-  if [[ -z "${STORAGECLASS_NAME}" ]]; then
-    error "STORAGECLASS_NAME MUST set in environment variable."
+  if [[ -z "${OPENEBS_STORAGECLASS_NAME}" ]]; then
+    error "OPENEBS_STORAGECLASS_NAME MUST set in environment variable."
   fi
 
-  if [[ -z "${VG_NAME}" ]]; then
-    error "VG_NAME MUST set in environment variable."
+  if [[ -z "${OPENEBS_VG_NAME}" ]]; then
+    error "OPENEBS_VG_NAME MUST set in environment variable."
   fi
 
-  if [[ -z "${CONTROLLER_NODE_NAMES}" ]]; then
-    error "CONTROLLER_NODE_NAMES MUST set in environment variable."
+  if [[ -z "${OPENEBS_CONTROLLER_NODE_NAMES}" ]]; then
+    error "OPENEBS_CONTROLLER_NODE_NAMES MUST set in environment variable."
   fi
 
   local control_node_array
-  IFS="," read -r -a control_node_array <<<"${CONTROLLER_NODE_NAMES}"
+  IFS="," read -r -a control_node_array <<<"${OPENEBS_CONTROLLER_NODE_NAMES}"
   for node in "${control_node_array[@]}"; do
     kubectl label node "${node}" 'openebs.io/control-plane=enable' --overwrite &>/dev/null || {
       error "kubectl label node ${node} 'openebs.io/control-plane=enable' failed, use kubectl to check reason"
     }
   done
 
-  if [[ -z "${DATA_NODE_NAMES}" ]]; then
-    error "DATA_NODE_NAMES MUST set in environment variable."
+  if [[ -z "${OPENEBS_DATA_NODE_NAMES}" ]]; then
+    error "OPENEBS_DATA_NODE_NAMES MUST set in environment variable."
   fi
 
   local data_node_array
-  IFS="," read -r -a data_node_array <<<"${DATA_NODE_NAMES}"
+  IFS="," read -r -a data_node_array <<<"${OPENEBS_DATA_NODE_NAMES}"
   for node in "${data_node_array[@]}"; do
     kubectl label node "${node}" 'openebs.io/node=enable' --overwrite &>/dev/null || {
       error "kubectl label node ${node} 'openebs.io/node=enable' failed, use kubectl to check reason"
@@ -165,17 +165,17 @@ verify_installed() {
 
 create_storageclass() {
 
-  cat << EOF > "/tmp/${STORAGECLASS_NAME}.yml"
+  cat << EOF > "/tmp/${OPENEBS_STORAGECLASS_NAME}.yml"
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: ${STORAGECLASS_NAME}
+  name: ${OPENEBS_STORAGECLASS_NAME}
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 parameters:
   shared: "no"
   storage: "lvm"
-  volgroup: "${VG_NAME}"
+  volgroup: "${OPENEBS_VG_NAME}"
   fsType: ext4
 provisioner: local.csi.openebs.io
 allowedTopologies:
@@ -183,7 +183,7 @@ allowedTopologies:
   - key: openebs.io/node
     values: ["enable"]
 EOF
-  kubectl apply -f "/tmp/${STORAGECLASS_NAME}.yml" || {
+  kubectl apply -f "/tmp/${OPENEBS_STORAGECLASS_NAME}.yml" || {
     error "create storageclass fail"
   }
 

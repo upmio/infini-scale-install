@@ -19,19 +19,19 @@ vgcreate local_HDD_VG {dev_name}
 
 ### 2. 设置必要的环境变量
 
-CONTROLLER_NODE_NAMES：指定安装controller pod的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
+OPENEBS_CONTROLLER_NODE_NAMES：指定安装controller pod的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
 
-DATA_NODE_NAMES：指定LVM PV的工作负载节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
+OPENEBS_DATA_NODE_NAMES：指定LVM PV的工作负载节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
 
-STORAGECLASS_NAME：指定Storageclass名称。
+OPENEBS_STORAGECLASS_NAME：指定Storageclass名称。
 
-VG_NAME：指定Storageclass对应的VolumeGroup名称。
+OPENEBS_VG_NAME：指定Storageclass对应的VolumeGroup名称。
 
 ```console
-export CONTROLLER_NODE_NAMES="openebs-control-plan01"
-export DATA_NODE_NAMES="openebs-control-plan01,kube-node01,kube-node02,kube-node03"
-export STORAGECLASS_NAME="openebs-lvmsc-hdd"
-export VG_NAME="local_HDD_VG"
+export OPENEBS_CONTROLLER_NODE_NAMES="openebs-control-plan01"
+export OPENEBS_DATA_NODE_NAMES="openebs-control-plan01,kube-node01,kube-node02,kube-node03"
+export OPENEBS_STORAGECLASS_NAME="openebs-lvmsc-hdd"
+export OPENEBS_VG_NAME="local_HDD_VG"
 ```
 
 ### 3. 运行安装脚本

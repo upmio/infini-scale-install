@@ -70,6 +70,7 @@ install_lvmlocalpv() {
     --create-namespace \
     --set lvmController.nodeSelector."openebs\.io/control-plane"="enable" \
     --set lvmNode.nodeSelector."openebs\.io/node"="enable" \
+    --set lvmPlugin.allowedTopologies="kubernetes.io/hostname,openebs.io/node" \
     --set analytics.enabled=false \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {

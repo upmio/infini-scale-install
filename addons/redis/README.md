@@ -12,7 +12,7 @@ REDIS_NODE_NAMES：指定安装 Redis pod的节点名称，节点名称可以使
 
 ```console
 export REDIS_PWD='password'
-export REDIS_NAMES="redis-node01"
+export REDIS_NODE_NAMES="redis-node01"
 ```
 
 ### 3. 运行安装脚本

@@ -14,6 +14,10 @@
 vgcreate local_HDD_VG {dev_name}
 ```
 
+### 部署 cert-manager
+
+部署方法请使用[cert-manger 部署](https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/cert-manager/README.md)
+
 ### 设置必要的环境变量
 
 CONTROLLER_NODE_NAMES：指定安装controller pod的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
@@ -52,4 +56,4 @@ watch kubectl get --namespace topolvm-system pods
 ## License
 
 <!-- Keep full URL links to repo files because this README syncs from main to gh-pages.  -->
-[Apache 2.0 License](https://github.com/prometheus-community/helm-charts/blob/main/LICENSE).
+[Apache 2.0 License](https://raw.githubusercontent.com/upmio/infini-scale-install/main/LICENSE).

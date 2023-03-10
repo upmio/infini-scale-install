@@ -53,6 +53,17 @@ curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addo
 watch kubectl get --namespace topolvm-system pods
 ```
 
+## 使用 Helm 卸载 Charts
+
+```console
+# Helm
+helm uninstall topolvm --namespace topolvm-system
+```
+
+这将删除与 Charts 关联的所有 Kubernetes 组件并删除发布。
+
+_请参阅 [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) 获取命令文档。_
+
 ## License
 
 <!-- Keep full URL links to repo files because this README syncs from main to gh-pages.  -->

@@ -78,7 +78,7 @@ install_mysql() {
     --set persistence.size=${PVC_SIZE_G}Gi \
     --set nodeAffinityPreset.type="hard" \
     --set nodeAffinityPreset.key="mysql\.node" \
-    --set nodeAffinityPreset.value='["enable"]' \
+    --set nodeAffinityPreset.values='{"enable"}' \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
     error "Fail to install ${RELEASE}."

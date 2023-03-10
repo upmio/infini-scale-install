@@ -24,7 +24,7 @@ export REDIS_NAMES="redis-node01"
 运行安装脚本
 ```console
 # BASH
-curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/mysql/install_el7.sh | sh -
+curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/redis/install_el7.sh | sh -
 ```
 
 等几分钟。 如果所有 mysql pod 都在运行，则 mysql 将成功安装。

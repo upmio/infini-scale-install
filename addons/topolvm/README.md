@@ -16,6 +16,8 @@ vgcreate local_HDD_VG {dev_name}
 
 ### 部署 cert-manager
 
+**注意：cert-manager 是被依赖的服务，必须在安装 topolvm 前完成 cert-manager 部署。**
+
 部署方法请使用[cert-manger 部署](https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/cert-manager/README.md)
 
 ### 设置必要的环境变量
@@ -50,7 +52,7 @@ curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addo
 等几分钟。 如果所有 topolvm  pod 都在运行，则 topolvm 将成功安装。
 
 ```console
-watch kubectl get --namespace topolvm-system pods
+kubectl get --namespace topolvm-system pods -w
 ```
 
 ## 使用 Helm 卸载 Charts

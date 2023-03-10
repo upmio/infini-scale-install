@@ -39,7 +39,7 @@ export VG_NAME="local_HDD_VG"
 运行安装脚本
 ```console
 # BASH
-curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/openebs-lvmlocalpv/install_el7.sh | sh -
+curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/openebs-lvmlocalpv/install_el7.sh | sh -
 ```
 
 等几分钟。 如果所有 openebs-lvmlocalpv  pod 都在运行，则 openebs-lvmlocalpv 将成功安装。

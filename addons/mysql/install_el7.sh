@@ -2,11 +2,11 @@
 
 # You must be prepared as follows before run install.sh:
 #
-# 1. CONTROLLER_NODE_NAMES MUST be set as environment variable, for an example:
+# 1. DB_USER MUST be set as environment variable, for an example:
 #
 #        export DB_USER="admin"
 #
-# 2. DATA_NODE_NAMES MUST be set as environment variable, for an example:
+# 2. DB_PWD MUST be set as environment variable, for an example:
 #
 #        export DB_PWD="passwords"
 #
@@ -18,7 +18,7 @@
 #
 #        export STORAGE_SIZE_G="50"
 #
-# 5. STORAGE_SIZE_G MUST be set as environment variable, for an example:
+# 5. DB_NODE_NAMES MUST be set as environment variable, for an example:
 #
 #        export DB_NODE_NAMES="kube-node01"
 

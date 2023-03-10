@@ -75,9 +75,9 @@ install_mysql() {
     --set auth.password=''${DB_PWD}'' \
     --set architecture='standalone' \
     --set persistence.storageClassName="${STORAGECLASS_NAME}" \
-    --set persistence.size=${STORAGE_SIZE_G}Gi \
+    --set persistence.size=${PVC_SIZE_G}Gi \
     --set nodeAffinityPreset.type="hard" \
-    --set nodeAffinityPreset.key="mysql.\node" \
+    --set nodeAffinityPreset.key="mysql\.node" \
     --set nodeAffinityPreset.value='["enable"]' \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
@@ -103,16 +103,24 @@ verify_supported() {
   local HAS_CURL
   HAS_CURL="$(type "curl" &>/dev/null && echo true || echo false)"
 
-  if [[ -z "${STORAGECLASS_NAME}" ]]; then
-    error "STORAGECLASS_NAME MUST set in environment variable."
-  fi
-
   if [[ -z "${DB_USER}" ]]; then
     error "DB_USER MUST set in environment variable."
   fi
 
   if [[ -z "${DB_PWD}" ]]; then
     error "DB_PWD MUST set in environment variable."
+  fi
+
+  if [[ -z "${STORAGECLASS_NAME}" ]]; then
+    error "STORAGECLASS_NAME MUST set in environment variable."
+  fi
+
+  kubectl get storageclasses "${STORAGECLASS_NAME}" &>/dev/null || {
+    error "storageclass resources not all ready, use kubectl to check reason"
+  }
+
+  if [[ -z "${PVC_SIZE_G}" ]]; then
+    error "PVC_SIZE_G MUST set in environment variable."
   fi
 
   if [[ -z "${DB_NODE_NAMES}" ]]; then

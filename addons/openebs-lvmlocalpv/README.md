@@ -45,7 +45,7 @@ curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addo
 等几分钟。 如果所有 openebs-lvmlocalpv  pod 都在运行，则 openebs-lvmlocalpv 将成功安装。
 
 ```console
-watch kubectl get --namespace openebs pods
+kubectl get --namespace openebs pods -w
 ```
 
 ## 使用 Helm 卸载 Charts

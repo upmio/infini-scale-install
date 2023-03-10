@@ -21,7 +21,7 @@ vgcreate local_HDD_VG {dev_name}
 
 **注意⚠️：cert-manager 是被依赖的服务，必须在安装 topolvm 前完成 cert-manager 部署。**
 
-部署方法请使用[cert-manger 部署](https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/cert-manager/README.md)
+部署方法请使用[cert-manger 部署](https://github.com/upmio/infini-scale-install/tree/main/addons/cert-manager)
 
 ### 3. 设置必要的环境变量
 

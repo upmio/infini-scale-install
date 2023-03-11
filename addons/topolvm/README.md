@@ -34,10 +34,10 @@ TOPOLVM_VG_NAME：指定Storageclass对应的VolumeGroup名称。
 TOPOLVM_DEVICE_CLASSES_NAME：指定设备类型名称。
 
 ```console
-export CONTROLLER_NODE_NAMES="topolvm-control-plan01"
-export DATA_NODE_NAMES="topolvm-control-plan01,kube-node01,kube-node02,kube-node03"
-export VG_NAME="local_HDD_VG"
-export DEVICE_CLASSES_NAME="ssd"
+export TOPOLVM_CONTROLLER_NODE_NAMES="topolvm-control-plan01"
+export TOPOLVM_DATA_NODE_NAMES="topolvm-control-plan01,kube-node01,kube-node02,kube-node03"
+export TOPOLVM_VG_NAME="local_HDD_VG"
+export TOPOLVM_DEVICE_CLASSES_NAME="ssd"
 ```
 
 ### 4. 运行安装脚本

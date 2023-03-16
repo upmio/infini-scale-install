@@ -24,11 +24,21 @@ export CLUSTERNET_CONTROLLER_NODE_NAMES="clusternet-control-plan01"
 curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusternet/install_parent_el7.sh | sh -
 ```
 
-等几分钟。 如果所有 carina  pod 都在运行，则 carina 将成功安装。
+运行脚本结束后会输出 registrationToken ，需要记录下，用于 clusternet-agent 部署时的必要信息
+registrationToken：用于 clusternet-agent 安装时需要连接的注册令牌
+
+输出样例如下：
+```console
+[Info][2023-03-16T16:44:19+0800]: token Created!
+[Info][2023-03-16T16:44:19+0800]: registrationToken=3bbf21.02056c07afc35cc3. PLEASE REMEMBER THIS.
+```
+
+等待几分钟。 如果所有 clusternet pod 都在运行，则 clusternet 将成功安装。
 
 ```console
 kubectl get --namespace clusternet-system pods -w
 ```
+
 
 ## 使用 Helm 卸载 Parnet cluster Charts
 

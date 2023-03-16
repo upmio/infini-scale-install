@@ -79,9 +79,9 @@ CLUSTERNET_REGISTRATION_TOKEN：连接 Parent cluster 的安全令牌
 
 CLUSTERNET_AGENT_NODE_NAMES：指定安装 clusternet-agent pod 的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
 
-CLUSTERNET_REG_NAME：集群的注册名称
+CLUSTERNET_REG_NAME：集群的注册名称，名称中不能包含```.``` ```_```
 
-CLUSTERNET_REG_NAMESPACE：集群的注册namespace
+CLUSTERNET_REG_NAMESPACE：集群的注册namespace，名称中不能包含```.``` ```_```
 
 ```console
 export CLUSTERNET_PARENT_URL="https://xxxx:6443"

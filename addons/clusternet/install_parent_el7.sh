@@ -149,16 +149,6 @@ init_log() {
   info "Log file create in path ${INSTALL_LOG_PATH}"
 }
 
-############################################
-# Check if helm release deployment correctly
-# Arguments:
-#   release
-#   namespace
-############################################
-verify_installed() {
-
-}
-
 main() {
   init_log
   verify_supported

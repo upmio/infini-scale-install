@@ -68,7 +68,7 @@ install_topolvm() {
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --set controller.replicaCount=${CONTROLLER_NDOE_COUNT} \
+    --set controller.replicaCount=${CONTROLLER_NODE_COUNT} \
     --set controller.nodeSelector."topolvm\.io/control-plane"="enable" \
     --set controller.storageCapacityTracking.enabled=true \
     --set scheduler.enabled=false \
@@ -128,12 +128,12 @@ verify_supported() {
 
   local control_node_array
   IFS="," read -r -a control_node_array <<<"${TOPOLVM_CONTROLLER_NODE_NAMES}"
-  CONTROLLER_NDOE_COUNT=0
+  CONTROLLER_NODE_COUNT=0
   for node in "${control_node_array[@]}"; do
     kubectl label node "${node}" 'topolvm.io/control-plane=enable' --overwrite &>/dev/null || {
       error "kubectl label node ${node} 'topolvm.io/control-plane=enable' failed, use kubectl to check reason"
     }
-    ((CONTROLLER_NDOE_COUNT++))
+    ((CONTROLLER_NODE_COUNT++))
   done
 
   if [[ -z "${TOPOLVM_DATA_NODE_NAMES}" ]]; then

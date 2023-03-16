@@ -55,11 +55,11 @@ install_clusternet_hub() {
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --set replicaCount=${CONTROLLER_NDOE_COUNT} \
+    --set replicaCount="${CONTROLLER_NODE_COUNT}" \
     --set nodeSelector."clusternet\.io/control-plane"="enable" \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
-    error "Fail to install ${RELEASE}."
+    error "Fail to install ${release}."
   }
 
   #TODO: check more resources after install
@@ -82,11 +82,11 @@ install_clusternet_scheduler() {
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --set replicaCount=${CLUSTERNET_CONTROLLER_NDOE_COUNT} \
+    --set replicaCount=${CLUSTERNET_CONTROLLER_NODE_COUNT} \
     --set nodeSelector."clusternet\.io/control-plane"="enable" \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
-    error "Fail to install ${RELEASE}."
+    error "Fail to install ${release}."
   }
 
   #TODO: check more resources after install
@@ -99,16 +99,19 @@ install_clusternet_scheduler() {
 }
 
 create_token() {
-  local token_id="$(head /dev/urandom |cksum |md5sum |cut -c 1-6)"
-  local token_secret="$(head /dev/urandom |cksum |md5sum |cut -c 1-16)"
+  local token_id
+  token_id="$(head /dev/urandom | cksum | md5sum | cut -c 1-6)"
+  local token_secret
+  token_secret="$(head /dev/urandom | cksum | md5sum | cut -c 1-16)"
 
-  envsubst < curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusternet/yaml/cluster_bootstrap_token.yaml | kubectl apply -f - || {
+  export token_id
+  export token_secret
+  curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusternet/yaml/cluster_bootstrap_token.yaml | envsubst | kubectl apply -f - || {
     error "kubectl create token secret fail, check log use kubectl."
   }
 
-  info "token Created! "
-  info "# HERE WILL OUTPUTS registrationToken. PLEASE REMEMBER THIS."
-  info "${token_id}.${token_secret}"
+  info "token Created!"
+  info "registrationToken=${token_id}.${token_secret}. PLEASE REMEMBER THIS."
 }
 
 init_helm_repo() {
@@ -133,12 +136,12 @@ verify_supported() {
 
   local control_node_array
   IFS="," read -r -a control_node_array <<<"${CLUSTERNET_CONTROLLER_NODE_NAMES}"
-  CLUSTERNET_CONTROLLER_NDOE_COUNT=0
+  CLUSTERNET_CONTROLLER_NODE_COUNT=0
   for node in "${control_node_array[@]}"; do
     kubectl label node "${node}" 'clusternet.io/control-plane=enable' --overwrite &>/dev/null || {
       error "kubectl label node ${node} 'clusternet.io/control-plane=enable' failed, use kubectl to check reason"
     }
-    ((CLUSTERNET_CONTROLLER_NDOE_COUNT++))
+    ((CLUSTERNET_CONTROLLER_NODE_COUNT++))
   done
 
   if [[ "${HAS_CURL}" != "true" ]]; then

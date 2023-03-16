@@ -127,8 +127,8 @@ verify_supported() {
   local HAS_CURL
   HAS_CURL="$(type "curl" &>/dev/null && echo true || echo false)"
 
-  if [[ -z "${CONTROLLER_NODE_NAMES}" ]]; then
-    error "CONTROLLER_NODE_NAMES MUST set in environment variable."
+  if [[ -z "${CLUSTERNET_CONTROLLER_NODE_NAMES}" ]]; then
+    error "CLUSTERNET_CONTROLLER_NODE_NAMES MUST set in environment variable."
   fi
 
   local control_node_array

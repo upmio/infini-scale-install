@@ -72,7 +72,7 @@ install_clusternet_agent() {
     --namespace ${NAMESPACE} \
     --create-namespace \
     --set parentURL="${CLUSTERNET_PARENT_URL}" \
-    --set registrationToken="${REGISTRATION_TOKEN}" \
+    --set registrationToken="${CLUSTERNET_REGISTRATION_TOKEN}" \
     --set replicaCount="${CLUSTERNET_AGENT_NODE_COUNT}" \
     --set extraArgs.cluster-reg-name="${CLUSTERNET_REG_NAME}" \
     --set extraArgs.cluster-reg-namespace="${CLUSTERNET_REG_NAMESPACE}" \
@@ -129,11 +129,11 @@ verify_supported() {
   done
 
   if [[ -z "${CLUSTERNET_REG_NAME}" ]]; then
-    error "REGISTRATION_TOKEN MUST set in environment variable."
+    error "CLUSTERNET_REG_NAME MUST set in environment variable."
   fi
 
   if [[ -z "${CLUSTERNET_REG_NAMESPACE}" ]]; then
-    error "REGISTRATION_TOKEN MUST set in environment variable."
+    error "CLUSTERNET_REG_NAMESPACE MUST set in environment variable."
   fi
 
   if [[ "${HAS_CURL}" != "true" ]]; then

@@ -2,9 +2,9 @@
 
 # You must be prepared as follows before run install.sh:
 #
-# 1. CONTROLLER_NODE_NAMES MUST be set as environment variable, for an example:
+# 1. CLUSTERNET_CONTROLLER_NODE_NAMES MUST be set as environment variable, for an example:
 #
-#        export CONTROLLER_NODE_NAMES="master01,master02"
+#        export CLUSTERNET_CONTROLLER_NODE_NAMES="master01,master02"
 #
 
 readonly NAMESPACE="clusternet-system"
@@ -82,7 +82,7 @@ install_clusternet_scheduler() {
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --set replicaCount=${CONTROLLER_NDOE_COUNT} \
+    --set replicaCount=${CLUSTERNET_CONTROLLER_NDOE_COUNT} \
     --set nodeSelector."clusternet\.io/control-plane"="enable" \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
@@ -132,13 +132,13 @@ verify_supported() {
   fi
 
   local control_node_array
-  IFS="," read -r -a control_node_array <<<"${CONTROLLER_NODE_NAMES}"
-  CONTROLLER_NDOE_COUNT=0
+  IFS="," read -r -a control_node_array <<<"${CLUSTERNET_CONTROLLER_NODE_NAMES}"
+  CLUSTERNET_CONTROLLER_NDOE_COUNT=0
   for node in "${control_node_array[@]}"; do
     kubectl label node "${node}" 'clusternet.io/control-plane=enable' --overwrite &>/dev/null || {
       error "kubectl label node ${node} 'clusternet.io/control-plane=enable' failed, use kubectl to check reason"
     }
-    ((CONTROLLER_NDOE_COUNT++))
+    ((CLUSTERNET_CONTROLLER_NDOE_COUNT++))
   done
 
   if [[ "${HAS_CURL}" != "true" ]]; then

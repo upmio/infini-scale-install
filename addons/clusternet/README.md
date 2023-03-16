@@ -6,10 +6,10 @@
 
 ### 1. 设置必要的环境变量
 
-CONTROLLER_NODE_NAMES：指定安装controller pod的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
+CLUSTERNET_CONTROLLER_NODE_NAMES：指定安装clusternet controller pod的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
 
 ```console
-export CONTROLLER_NODE_NAMES="clusternet-control-plan01"
+export CLUSTERNET_CONTROLLER_NODE_NAMES="clusternet-control-plan01"
 ```
 
 ### 2. 运行安装脚本

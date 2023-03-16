@@ -55,7 +55,7 @@ install_clusternet_hub() {
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --set replicaCount="${CONTROLLER_NODE_COUNT}" \
+    --set replicaCount="${CLUSTERNET_CONTROLLER_NODE_COUNT}" \
     --set nodeSelector."clusternet\.io/control-plane"="enable" \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {

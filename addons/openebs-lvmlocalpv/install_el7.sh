@@ -165,26 +165,8 @@ verify_installed() {
 
 create_storageclass() {
 
-  cat << EOF > "/tmp/${OPENEBS_STORAGECLASS_NAME}.yml"
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: ${OPENEBS_STORAGECLASS_NAME}
-allowVolumeExpansion: true
-volumeBindingMode: WaitForFirstConsumer
-parameters:
-  shared: "no"
-  storage: "lvm"
-  volgroup: "${OPENEBS_VG_NAME}"
-  fsType: ext4
-provisioner: local.csi.openebs.io
-allowedTopologies:
-- matchLabelExpressions:
-  - key: openebs.io/node
-    values: ["enable"]
-EOF
-  kubectl apply -f "/tmp/${OPENEBS_STORAGECLASS_NAME}.yml" || {
-    error "create storageclass fail"
+  curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/openebs-lvmlocalpv/yaml/storageclass.yaml | envsubst | kubectl apply -f - || {
+    error "kubectl create storageclass fail, check log use kubectl."
   }
 
   info "create storageclass successful!"

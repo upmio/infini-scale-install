@@ -21,7 +21,7 @@ export CONTROLLER_NODE_NAMES="clusternet-control-plan01"
 运行安装脚本
 ```console
 # BASH
-curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusternet/install_parnet_sel7.sh | sh -
+curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusternet/install_parent_el7.sh | sh -
 ```
 
 等几分钟。 如果所有 carina  pod 都在运行，则 carina 将成功安装。

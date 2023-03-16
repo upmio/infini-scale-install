@@ -98,6 +98,19 @@ install_clusternet_scheduler() {
   info "${release} Deployment Completed!"
 }
 
+create_token() {
+  local token_id="$(head /dev/urandom |cksum |md5sum |cut -c 1-6)"
+  local token_secret="$(head /dev/urandom |cksum |md5sum |cut -c 1-16)"
+
+  envsubst < curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusternet/yaml/cluster_bootstrap_token.yaml | kubectl apply -f - || {
+    error "kubectl create token secret fail, check log use kubectl."
+  }
+
+  info "token Created! "
+  info "# HERE WILL OUTPUTS registrationToken. PLEASE REMEMBER THIS."
+  info "${token_id}.${token_secret}"
+}
+
 init_helm_repo() {
   helm repo add clusternet https://clusternet.github.io/charts &>/dev/null
   info "Start update helm clusternet repo"
@@ -155,6 +168,7 @@ main() {
   init_helm_repo
   install_clusternet_hub
   install_clusternet_scheduler
+  create_token
 }
 
 main

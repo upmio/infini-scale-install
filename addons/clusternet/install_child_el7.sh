@@ -133,9 +133,19 @@ verify_supported() {
     error "CLUSTERNET_REG_NAME MUST set in environment variable."
   fi
 
+  # 检查变量 CLUSTERNET_REG_NAME 的值不能包含 . _
+  if [[ "${CLUSTERNET_REG_NAME}" =~ [._] ]]; then
+    error "CLUSTERNET_REG_NAME MUST NOT contain . or _"
+  fi
+
   # 检查变量 CLUSTERNET_REG_NAMESPACE 不能为空
   if [[ -z "${CLUSTERNET_REG_NAMESPACE}" ]]; then
     error "CLUSTERNET_REG_NAMESPACE MUST set in environment variable."
+  fi
+
+  # 检查变量 CLUSTERNET_REG_NAMESPACE 的值不能包含 . _
+  if [[ "${CLUSTERNET_REG_NAMESPACE}" =~ [._] ]]; then
+    error "CLUSTERNET_REG_NAMESPACE MUST NOT contain . or _"
   fi
 
   if [[ "${HAS_CURL}" != "true" ]]; then

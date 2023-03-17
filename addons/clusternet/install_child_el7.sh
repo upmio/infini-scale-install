@@ -14,11 +14,11 @@
 #
 #        export CLUSTERNET_AGENT_NODE_NAMES="clusternet-agent01"
 #
-# 3. CLUSTERNET_REG_NAME MUST be set as environment variable, for an example:
+# 4. CLUSTERNET_REG_NAME MUST be set as environment variable, for an example:
 #
 #        export CLUSTERNET_REG_NAME="mycluster"
 #
-# 3. CLUSTERNET_REG_NAMESPACE MUST be set as environment variable, for an example:
+# 5. CLUSTERNET_REG_NAMESPACE MUST be set as environment variable, for an example:
 #
 #        export CLUSTERNET_REG_NAMESPACE="mycluster-ns"
 #
@@ -128,10 +128,12 @@ verify_supported() {
     ((CLUSTERNET_AGENT_NODE_COUNT++))
   done
 
+  # 检查变量 CLUSTERNET_REG_NAME 不能为空
   if [[ -z "${CLUSTERNET_REG_NAME}" ]]; then
     error "CLUSTERNET_REG_NAME MUST set in environment variable."
   fi
 
+  # 检查变量 CLUSTERNET_REG_NAMESPACE 不能为空
   if [[ -z "${CLUSTERNET_REG_NAMESPACE}" ]]; then
     error "CLUSTERNET_REG_NAMESPACE MUST set in environment variable."
   fi

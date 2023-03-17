@@ -2,17 +2,17 @@
 
 本文档目标是指导安装多集群管理程序 [clusternet](https://github.com/clusternet/clusternet) 。
 
-## 快速安装clusternet Parnet Cluster
+## 快速安装clusternet Parent Cluster
 
 ### 1. 确定登录kubernetes 
 
-使用 kubectl 确定目前连接的集群是 Parnet Cluster。
+使用 kubectl 确定目前连接的集群是 Parent Cluster。
 
 ```console
 kubectl cluster-info
 ```
 
-**注意⚠️：运行在 Parnet Cluster 中的 kube-apiserver 应该配置标志 --aggregator-reject-forwarding-redirect=false。**
+**注意⚠️：运行在 Parent Cluster 中的 kube-apiserver 应该配置标志 --aggregator-reject-forwarding-redirect=false。**
 
 ### 2. 设置必要的环境变量
 
@@ -49,7 +49,7 @@ registrationToken：用于 clusternet-agent 安装时需要连接的注册令牌
 kubectl get --namespace clusternet-system pods -w
 ```
 
-## 使用 Helm 卸载 Parnet cluster Charts
+## 使用 Helm 卸载 Parent cluster Charts
 
 ```console
 # Helm

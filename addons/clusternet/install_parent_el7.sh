@@ -7,7 +7,7 @@
 #        export CLUSTERNET_CONTROLLER_NODE_NAMES="master01,master02"
 #
 
-readonly NAMESPACE="clusternet-system"
+readonly CLUSTERNET_NS="clusternet-system"
 readonly TIME_OUT_SECOND="600s"
 
 INSTALL_LOG_PATH=""
@@ -47,13 +47,13 @@ install_helm() {
 install_clusternet_hub() {
   local release="clusternet-hub"
   # check if clusternet-hub already installed
-  if helm status ${release} -n ${NAMESPACE} &>/dev/null; then
+  if helm status ${release} -n ${CLUSTERNET_NS} &>/dev/null; then
     error "${release} already installed. Use helm remove it first"
   fi
   info "Install ${release}, It might take a long time..."
   helm install ${release} clusternet/clusternet-hub \
     --debug \
-    --namespace ${NAMESPACE} \
+    --namespace ${CLUSTERNET_NS} \
     --create-namespace \
     --set replicaCount="${CLUSTERNET_CONTROLLER_NODE_COUNT}" \
     --set nodeSelector."clusternet\.io/control-plane"="enable" \
@@ -64,7 +64,7 @@ install_clusternet_hub() {
 
   #TODO: check more resources after install
 
-  helm status "${release}" -n "${NAMESPACE}" | grep deployed &>/dev/null || {
+  helm status "${release}" -n "${CLUSTERNET_NS}" | grep deployed &>/dev/null || {
     error "${release} installed fail, check log use helm and kubectl."
   }
 
@@ -74,13 +74,13 @@ install_clusternet_hub() {
 install_clusternet_scheduler() {
   local release="clusternet-scheduler"
   # check if clusternet-scheduler already installed
-  if helm status ${release} -n ${NAMESPACE} &>/dev/null; then
+  if helm status ${release} -n ${CLUSTERNET_NS} &>/dev/null; then
     error "${release} already installed. Use helm remove it first"
   fi
   info "Install ${release}, It might take a long time..."
   helm install ${release} clusternet/clusternet-scheduler \
     --debug \
-    --namespace ${NAMESPACE} \
+    --namespace ${CLUSTERNET_NS} \
     --create-namespace \
     --set replicaCount=${CLUSTERNET_CONTROLLER_NODE_COUNT} \
     --set nodeSelector."clusternet\.io/control-plane"="enable" \
@@ -91,7 +91,7 @@ install_clusternet_scheduler() {
 
   #TODO: check more resources after install
 
-  helm status "${release}" -n "${NAMESPACE}" | grep deployed &>/dev/null || {
+  helm status "${release}" -n "${CLUSTERNET_NS}" | grep deployed &>/dev/null || {
     error "${release} installed fail, check log use helm and kubectl."
   }
 

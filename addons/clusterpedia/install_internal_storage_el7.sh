@@ -153,7 +153,7 @@ verify_supported() {
   fi
 
   if [[ -z "${CLUSTERPEDIA_MYSQL_NODE}" ]]; then
-    error "CLUSTERPEDIA_MYSQL_HOST MUST set in environment variable."
+    error "CLUSTERPEDIA_MYSQL_NODE MUST set in environment variable."
   fi
 
   if [[ "${HAS_CURL}" != "true" ]]; then

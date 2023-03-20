@@ -69,9 +69,11 @@ CLUSTERPEDIA_CONTROLLER_NODE_NAMES：指定安装 clusterpedia-controller pod的
 
 CLUSTERPEDIA_WORKER_NODE_NAMES：指定安装 clusterpedia-worker pod的节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
 
-CLUSTERPEDIA_MYSQL_USER：外置数据库登录 MySQL 用户名。
+CLUSTERPEDIA_MYSQL_USER：内置数据库登录 MySQL 用户名。
 
-CLUSTERPEDIA_MYSQL_PASSWORD：外置数据库登录 MySQL 密码。
+CLUSTERPEDIA_MYSQL_PASSWORD：内置数据库登录 MySQL 密码。
+
+CLUSTERPEDIA_MYSQL_NODE：内置数据库所在节点名称。
 
 ```console
 export CLUSTERPEDIA_CONTROLLER_NODE_NAMES="clusterpedia-control-plan01"

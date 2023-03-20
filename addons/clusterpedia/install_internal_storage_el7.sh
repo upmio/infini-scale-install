@@ -18,7 +18,7 @@
 #
 #        export CLUSTERPEDIA_MYSQL_PASSWORD="password"
 #
-# 4. CLUSTERPEDIA_MYSQL_NODE MUST be set as environment variable, for an example:
+# 5. CLUSTERPEDIA_MYSQL_NODE MUST be set as environment variable, for an example:
 #
 #        export CLUSTERPEDIA_MYSQL_NODE="mysql-0"
 #

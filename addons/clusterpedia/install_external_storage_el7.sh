@@ -79,6 +79,7 @@ install_clusterpedia() {
     --set installCRDs=true \
     --set postgresql.enabled=false \
     --set mysql.enabled=false \
+    --set persistenceMatchNode=None \
     --set storageInstallMode="external" \
     --set externalStorage.type="mysql" \
     --set externalStorage.host="${CLUSTERPEDIA_MYSQL_HOST}" \

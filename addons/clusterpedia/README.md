@@ -44,7 +44,7 @@ export CLUSTERPEDIA_MYSQL_PASSWORD="password"
 运行安装脚本
 ```console
 # BASH
-curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusterpedia/install_external_storage_parent_el7.sh | sh -
+curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusterpedia/install_external_storage_el7.sh | sh -
 ```
 
 等待几分钟。 如果所有 clusterpedia pod 都在运行，则 clusterpedia 将成功安装。
@@ -91,7 +91,7 @@ export CLUSTERPEDIA_MYSQL_PASSWORD="password"
 运行安装脚本
 ```console
 # BASH
-curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusterpedia/install_internal_storage_child_el7.sh | sh -
+curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/clusterpedia/install_internal_storage_el7.sh | sh -
 ```
 
 等待几分钟。 如果所有 clusterpedia pod 都在运行，则 clusterpedia 将成功安装。

@@ -10,21 +10,19 @@
 #
 #        export CLUSTERPEDIA_WORKER_NODE_NAMES="worker01,worker02"
 #
-# 3. CLUSTERPEDIA_MYSQL_USER MUST be set as environment variable, for an example:
 #
-#        export CLUSTERPEDIA_MYSQL_USER="clusterpedia"
-#
-# 4. CLUSTERPEDIA_MYSQL_PASSWORD MUST be set as environment variable, for an example:
+# 3. CLUSTERPEDIA_MYSQL_PASSWORD MUST be set as environment variable, for an example:
 #
 #        export CLUSTERPEDIA_MYSQL_PASSWORD="password"
 #
-# 5. CLUSTERPEDIA_MYSQL_NODE MUST be set as environment variable, for an example:
+# 4. CLUSTERPEDIA_MYSQL_NODE MUST be set as environment variable, for an example:
 #
 #        export CLUSTERPEDIA_MYSQL_NODE="mysql-0"
 #
 
 readonly CLUSTERPEDIA_NS="clusterpedia-system"
 readonly CLUSTERPEDIA_MYSQL_DATABASE="clusterpedia"
+readonly CLUSTERPEDIA_MYSQL_USER="clusterpedia"
 readonly TIME_OUT_SECOND="600s"
 
 INSTALL_LOG_PATH=""
@@ -143,10 +141,6 @@ verify_supported() {
     }
     ((CLUSTERPEDIA_WORKER_NODE_COUNT++))
   done
-
-  if [[ -z "${CLUSTERPEDIA_MYSQL_USER}" ]]; then
-    error "CLUSTERPEDIA_MYSQL_USER MUST set in environment variable."
-  fi
 
   if [[ -z "${CLUSTERPEDIA_MYSQL_PASSWORD}" ]]; then
     error "CLUSTERPEDIA_MYSQL_PASSWORD MUST set in environment variable."

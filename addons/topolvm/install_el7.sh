@@ -91,7 +91,7 @@ install_topolvm() {
 init_helm_repo() {
   helm repo add topolvm https://topolvm.github.io/topolvm &>/dev/null
   info "Start update helm topolvm repo"
-  if ! helm repo update 2>/dev/null; then
+  if ! helm repo update topolvm 2>/dev/null; then
     error "Helm update topolvm repo error."
   fi
 }

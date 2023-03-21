@@ -62,7 +62,7 @@ install_cert_managers() {
 init_helm_repo() {
   helm repo add jetstack https://charts.jetstack.io &>/dev/null
   info "Start update helm cert-manager repo"
-  if ! helm repo update 2>/dev/null; then
+  if ! helm repo update jetstack 2>/dev/null; then
     error "Helm update cert-manager repo error."
   fi
 }

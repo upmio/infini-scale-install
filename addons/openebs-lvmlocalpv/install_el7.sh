@@ -83,7 +83,7 @@ install_lvmlocalpv() {
 init_helm_repo() {
   helm repo add openebs-lvmlocalpv https://openebs.github.io/lvm-localpv &>/dev/null
   info "Start update helm openebs-lvmlocalpv repo"
-  if ! helm repo update 2>/dev/null; then
+  if ! helm repo update openebs-lvmlocalpv 2>/dev/null; then
     error "Helm update openebs-lvmlocalpv repo error."
   fi
 }

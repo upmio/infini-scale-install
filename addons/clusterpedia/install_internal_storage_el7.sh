@@ -101,7 +101,7 @@ install_clusterpedia() {
 init_helm_repo() {
   helm repo add clusterpedia https://clusterpedia-io.github.io/clusterpedia-helm/ &>/dev/null
   info "Start update helm clusterpedia repo"
-  if ! helm repo update 2>/dev/null; then
+  if ! helm repo update clusterpedia 2>/dev/null; then
     error "Helm update clusterpedia repo error."
   fi
 }

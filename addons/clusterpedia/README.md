@@ -102,7 +102,7 @@ kubectl get --namespace clusterpedia-system pods -w
 
 ```console
 # Helm
-helm uninstall clusternet-agent --namespace clusternet-system
+helm uninstall clusterpedia --namespace clusterpedia-system
 ```
 
 这将删除与 Charts 关联的所有 Kubernetes 组件并删除发布。

@@ -54,6 +54,7 @@ install_kruise() {
   info "Install ${release}, It might take a long time..."
   helm install ${release} openkruise/kruise --version "${KRUISE_VERSION}" \
     --debug \
+    --namespace ${KRUISE_NS} \
     --set installation.namespace=${KRUISE_NS} \
     --set manager.replicas="${KRUISE_CONTROLLER_NODE_COUNT}" \
     --set manager.nodeSelector."openkruise\.io/control-plane"="enable" \

@@ -95,8 +95,8 @@ verify_supported() {
   IFS="," read -r -a control_node_array <<<"${KRUISE_CONTROLLER_NODE_NAMES}"
   KRUISE_CONTROLLER_NODE_COUNT=0
   for node in "${control_node_array[@]}"; do
-    kubectl label node "${node}" 'kruise.io/control-plane=enable' --overwrite &>/dev/null || {
-      error "kubectl label node ${node} 'kruise.io/control-plane=enable' failed, use kubectl to check reason"
+    kubectl label node "${node}" 'openkruise.io/control-plane=enable' --overwrite &>/dev/null || {
+      error "kubectl label node ${node} 'openkruise.io/control-plane=enable' failed, use kubectl to check reason"
     }
     ((KRUISE_CONTROLLER_NODE_COUNT++))
   done

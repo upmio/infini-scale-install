@@ -76,9 +76,9 @@ install_kruise() {
 
 init_helm_repo() {
   helm repo add openkruise https://openkruise.github.io/charts/ &>/dev/null
-  info "Start update helm kruise repo"
-  if ! helm repo update 2>/dev/null; then
-    error "Helm update kruise repo error."
+  info "Start update helm openkruise repo"
+  if ! helm repo update openkruise 2>/dev/null; then
+    error "Helm update openkruise repo error."
   fi
 }
 

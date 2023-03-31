@@ -90,7 +90,7 @@ install_mysql() {
 init_helm_repo() {
   helm repo add mysqlrepo https://haolowkey.github.io/helm-mysql &>/dev/null
   info "Start update helm mysql repo"
-  if ! helm repo update 2>/dev/null; then
+  if ! helm repo update mysqlrepo 2>/dev/null; then
     error "Helm update mysql repo error."
   fi
 }

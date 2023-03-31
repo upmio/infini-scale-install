@@ -60,6 +60,7 @@ install_helm() {
 }
 
 install_clusterpedia() {
+  info "Install clusterpedia..."
   local release="clusterpedia"
   # check if clusterpedia already installed
   if helm status ${release} -n ${CLUSTERPEDIA_NS} &>/dev/null; then
@@ -99,7 +100,10 @@ install_clusterpedia() {
 }
 
 init_helm_repo() {
-  helm repo add clusterpedia https://clusterpedia-io.github.io/clusterpedia-helm/ &>/dev/null
+  info "Start init helm clusterpedia repo"
+  helm repo add clusterpedia https://clusterpedia-io.github.io/clusterpedia-helm/ &>/dev/null || {
+    error "Helm repo add clusterpedia error."
+  }
   info "Start update helm clusterpedia repo"
   if ! helm repo update clusterpedia 2>/dev/null; then
     error "Helm update clusterpedia repo error."

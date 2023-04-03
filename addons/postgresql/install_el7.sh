@@ -35,6 +35,10 @@ readonly NAMESPACE="postgresql"
 readonly CHART="bitnami/postgresql"
 readonly RELEASE="postgresql"
 readonly TIME_OUT_SECOND="600s"
+readonly RESOURCE_LIMITS_CPU="2"
+readonly RESOURCE_LIMITS_MEMORY="4Gi"
+readonly RESOURCE_REQUESTS_CPU="2"
+readonly RESOURCE_REQUESTS_MEMORY="4Gi"
 
 INSTALL_LOG_PATH=""
 
@@ -85,11 +89,17 @@ install_postgresql() {
     --set auth.password=''${POSTGRE_USER_PWD}'' \
     --set containerPorts.postgresql=''${POSTGRE_PORT}'' \
     --set architecture='standalone' \
+    --set primary.resources.limits.cpu=''${RESOURCE_LIMITS_CPU}'' \
+    --set primary.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \
+    --set primary.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
+    --set primary.resources.requests.cpu=''${RESOURCE_REQUESTS_CPU}'' \
     --set primary.persistence.storageClass="${POSTGRE_STORAGECLASS_NAME}" \
     --set primary.persistence.size=${POSTGRE_PVC_SIZE_G}Gi \
     --set primary.nodeAffinityPreset.type="hard" \
     --set primary.nodeAffinityPreset.key="postgresql\.node" \
     --set primary.nodeAffinityPreset.values='{enable}' \
+    --set primary.podSecurityContext.fsGroup=0 \
+    --set primary.containerSecurityContext.runAsUser=0 \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
     error "Fail to install ${RELEASE}."

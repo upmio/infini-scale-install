@@ -96,7 +96,7 @@ install_mysql() {
     --set primary.persistence.storageClass=''"${MYSQL_STORAGECLASS_NAME}"'' \
     --set primary.persistence.size=''"${MYSQL_PVC_SIZE_G}Gi"'' \
     --set primary.nodeAffinityPreset.type="hard" \
-    --set primary.nodeAffinityPreset.key="mysql\.node" \
+    --set primary.nodeAffinityPreset.key="mysql\.standalone\.node" \
     --set primary.nodeAffinityPreset.values='{enable}' \
     --set primary.podSecurityContext.fsGroup=0 \
     --set primary.containerSecurityContext.runAsUser=0 \
@@ -155,7 +155,7 @@ verify_supported() {
   local db_node_array
   IFS="," read -r -a db_node_array <<<"${MYSQL_NODE_NAMES}"
   for node in "${db_node_array[@]}"; do
-    kubectl label node "${node}" 'mysql.node=enable' --overwrite &>/dev/null || {
+    kubectl label node "${node}" 'mysql.standalone.node=enable' --overwrite &>/dev/null || {
       error "kubectl label node ${node} 'mysql.node=enable' failed, use kubectl to check reason"
     }
   done

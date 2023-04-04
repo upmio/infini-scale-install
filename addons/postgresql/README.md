@@ -34,7 +34,7 @@ export POSTGRE_PORT="5432"
 
 **注意⚠️：如果找不到 Helm3，将自动安装。**
 
-**注意⚠️：安装脚本会对指定节点进行添加label的操作。**
+**注意⚠️：安装脚本会对指定 PostgreSQL pod 的节点进行添加label的操作，标签为 ```postgresql.standalone.node=enable```。**
 
 运行安装脚本
 ```console

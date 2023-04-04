@@ -34,7 +34,7 @@ export MYSQL_PORT="3306"
 
 **注意⚠️：如果找不到 Helm3，将自动安装。**
 
-**注意⚠️：安装脚本会对指定节点进行添加label的操作。**
+**注意⚠️：安装脚本会对指定 MySQL pod 的节点进行添加label的操作，标签为 ```mysql.standalone.node=enable```。**
 
 运行安装脚本
 ```console

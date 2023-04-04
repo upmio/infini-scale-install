@@ -84,17 +84,17 @@ install_postgresql() {
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --set auth.postgresPassword=''${POSTGRE_PWD}'' \
-    --set auth.username=''${POSTGRE_USER_NAME}'' \
-    --set auth.password=''${POSTGRE_USER_PWD}'' \
-    --set containerPorts.postgresql=''${POSTGRE_PORT}'' \
     --set architecture='standalone' \
     --set primary.resources.limits.cpu=''${RESOURCE_LIMITS_CPU}'' \
     --set primary.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \
     --set primary.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
     --set primary.resources.requests.cpu=''${RESOURCE_REQUESTS_CPU}'' \
+    --set auth.postgresPassword=''"${POSTGRE_PWD}"'' \
+    --set auth.username=''"${POSTGRE_USER_NAME}"'' \
+    --set auth.password=''"${POSTGRE_USER_PWD}"'' \
+    --set containerPorts.postgresql=''"${POSTGRE_PORT}"'' \
     --set primary.persistence.storageClass="${POSTGRE_STORAGECLASS_NAME}" \
-    --set primary.persistence.size=${POSTGRE_PVC_SIZE_G}Gi \
+    --set primary.persistence.size="${POSTGRE_PVC_SIZE_G}"Gi \
     --set primary.nodeAffinityPreset.type="hard" \
     --set primary.nodeAffinityPreset.key="postgresql\.node" \
     --set primary.nodeAffinityPreset.values='{enable}' \

@@ -39,7 +39,7 @@ export POSTGRE_PORT="5432"
 运行安装脚本
 ```console
 # BASH
-curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/postgresql/install_el7.sh | sh -
+curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/postgresql_standalone/install_el7.sh | sh -
 ```
 
 等几分钟。 如果所有 PostgreSQL pod 都在运行，则 PostgreSQL 将成功安装。

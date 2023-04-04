@@ -1,6 +1,6 @@
-# 部署 PostgreSQL
+# 部署 PostgreSQL 单机版
 
-本文档目标是指导安装 PostgreSQL 。
+本文档目标是指导安装 PostgreSQL 单机版。
 
 ## 快速安装指南
 

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash 
 
-#!/usr/bin/env bash
-
 readonly NAMESPACE="promethues"
 readonly CHART="prometheus-community/kube-prometheus-stack"
 readonly RELEASE="prometheus"

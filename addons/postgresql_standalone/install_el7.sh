@@ -33,7 +33,7 @@
 
 readonly NAMESPACE="postgresql"
 readonly CHART="bitnami/postgresql"
-readonly RELEASE="postgresql_standalone"
+readonly RELEASE="postgresql-standalone"
 readonly TIME_OUT_SECOND="600s"
 readonly RESOURCE_LIMITS_CPU="2"
 readonly RESOURCE_LIMITS_MEMORY="4Gi"

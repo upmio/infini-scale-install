@@ -84,6 +84,7 @@ install_mysql() {
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
+    --set image.debug=true \
     --set architecture='standalone' \
     --set primary.resources.limits.cpu=''${RESOURCE_LIMITS_CPU}'' \
     --set primary.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \

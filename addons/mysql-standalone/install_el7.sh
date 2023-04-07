@@ -88,8 +88,8 @@ install_mysql() {
     --set architecture='standalone' \
     --set primary.resources.limits.cpu=''${RESOURCE_LIMITS_CPU}'' \
     --set primary.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \
-    --set primary.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
     --set primary.resources.requests.cpu=''${RESOURCE_REQUESTS_CPU}'' \
+    --set primary.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
     --set auth.rootPassword=''"${MYSQL_PWD}"'' \
     --set auth.username=''"${MYSQL_USER_NAME}"'' \
     --set auth.password=''"${MYSQL_USER_PWD}"'' \
@@ -111,11 +111,15 @@ install_mysql() {
 }
 
 init_helm_repo() {
-  helm repo add bitnami https://charts.bitnami.com/bitnami &>/dev/null
+  info "Start add helm bitnami repo"
+  helm repo add bitnami https://charts.bitnami.com/bitnami &>/dev/null || {
+    error "Helm add bitnami repo error."
+  }
+
   info "Start update helm bitnami repo"
-  if ! helm repo update bitnami 2>/dev/null; then
+  helm repo update bitnami 2>/dev/null || {
     error "Helm update bitnami repo error."
-  fi
+  }
 }
 
 verify_supported() {
@@ -158,7 +162,7 @@ verify_supported() {
   IFS="," read -r -a db_node_array <<<"${MYSQL_NODE_NAMES}"
   for node in "${db_node_array[@]}"; do
     kubectl label node "${node}" 'mysql.standalone.node=enable' --overwrite &>/dev/null || {
-      error "kubectl label node ${node} 'mysql.node=enable' failed, use kubectl to check reason"
+      error "kubectl label node ${node} 'mysql.standalone.node=enable' failed, use kubectl to check reason"
     }
   done
 

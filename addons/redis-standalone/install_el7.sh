@@ -68,6 +68,7 @@ install_redis() {
     --set master.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \
     --set master.resources.requests.cpu=''${RESOURCE_REQUESTS_CPU}'' \
     --set master.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
+    --set master.kind=Deployment \
     --set global.redis.password=''${REDIS_PWD}'' \
     --set master.count=1 \
     --set master.containerPorts.redis=6379 \

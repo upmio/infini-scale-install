@@ -37,7 +37,7 @@ kubectl get --namespace redis pods -w
 
 ```console
 # Helm
-helm uninstall redis --namespace redis
+helm uninstall redis-standalone --namespace redis
 ```
 
 这将删除与 Charts 关联的所有 Kubernetes 组件并删除发布。

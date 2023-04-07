@@ -80,8 +80,8 @@ install_redis() {
     --set global.redis.password=''${REDIS_PWD}'' \
     --set master.count=1 \
     --set master.containerPorts.redis=6379 \
-    --set master.persistence.storageClass="${POSTGRE_STORAGECLASS_NAME}" \
-    --set master.persistence.size="${POSTGRE_PVC_SIZE_G}"Gi \
+    --set master.persistence.storageClass="${REDIS_STORAGECLASS_NAME}" \
+    --set master.persistence.size="${REDIS_PVC_SIZE_G}"Gi \
     --set master.nodeAffinityPreset.type="hard" \
     --set master.nodeAffinityPreset.key="redis\.standalone\.node" \
     --set master.nodeAffinityPreset.values='{enable}' \

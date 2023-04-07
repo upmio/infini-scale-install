@@ -16,7 +16,7 @@
 #
 # 4. POSTGRE_STORAGECLASS_NAME MUST be set as environment variable, for an example:
 #
-#        export POSTGRE_STORAGECLASS_NAME=""
+#        export POSTGRE_STORAGECLASS_NAME="openebs-lvmsc-hdd"
 #
 # 5. POSTGRE_PVC_SIZE_G MUST be set as environment variable, for an example:
 #

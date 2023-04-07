@@ -9,6 +9,15 @@
 # 2. REDIS_NODE_NAMES MUST be set as environment variable, for an example:
 #
 #        export REDIS_NODE_NAMES="kube-node01"
+#
+# 3. REDIS_STORAGECLASS_NAME MUST be set as environment variable, for an example:
+#
+#        export REDIS_STORAGECLASS_NAME="openebs-lvmsc-hdd"
+#
+# 4. REDIS_PVC_SIZE_G MUST be set as environment variable, for an example:
+#
+#        export REDIS_PVC_SIZE_G="50"
+#
 
 readonly NAMESPACE="redis"
 readonly CHART="bitnami/redis"
@@ -68,13 +77,16 @@ install_redis() {
     --set master.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \
     --set master.resources.requests.cpu=''${RESOURCE_REQUESTS_CPU}'' \
     --set master.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
-    --set master.kind=Deployment \
     --set global.redis.password=''${REDIS_PWD}'' \
     --set master.count=1 \
     --set master.containerPorts.redis=6379 \
+    --set master.persistence.storageClass="${POSTGRE_STORAGECLASS_NAME}" \
+    --set master.persistence.size="${POSTGRE_PVC_SIZE_G}"Gi \
     --set master.nodeAffinityPreset.type="hard" \
     --set master.nodeAffinityPreset.key="redis\.standalone\.node" \
     --set master.nodeAffinityPreset.values='{enable}' \
+    --set master.podSecurityContext.fsGroup=0 \
+    --set master.containerSecurityContext.runAsUser=0 \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
     error "Fail to install ${RELEASE}."
@@ -118,6 +130,18 @@ verify_supported() {
       error "kubectl label node ${node} 'redis.standalone.node=enable' failed, use kubectl to check reason"
     }
   done
+
+  if [[ -z "${REDIS_STORAGECLASS_NAME}" ]]; then
+    error "REDIS_STORAGECLASS_NAME MUST set in environment variable."
+  fi
+
+  kubectl get storageclasses "${REDIS_STORAGECLASS_NAME}" &>/dev/null || {
+    error "storageclass resources not all ready, use kubectl to check reason"
+  }
+
+  if [[ -z "${REDIS_PVC_SIZE_G}" ]]; then
+    error "REDIS_PVC_SIZE_G MUST set in environment variable."
+  fi
 
   if [[ "${HAS_CURL}" != "true" ]]; then
     error "curl is required"

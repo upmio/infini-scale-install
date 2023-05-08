@@ -6,7 +6,7 @@
 
 ### 1. 设置必要的环境变量
 
-MYSQL_PWD：指定 "postgres" 管理员用户密码。
+MYSQL_PWD：指定 MySQL 管理员用户密码。
 
 MYSQL_USER_NAME：登录 MySQL 用户名。
 

@@ -64,12 +64,12 @@ install_helm() {
   info "Helm install completed"
 }
 
-install_mysql() {
-  # check if mysql already installed
+install_influxdb() {
+  # check if influxdb already installed
   if helm status ${RELEASE} -n ${NAMESPACE} &>/dev/null; then
     error "${RELEASE} already installed. Use helm remove it first"
   fi
-  info "Install mysql, It might take a long time..."
+  info "Install influxdb, It might take a long time..."
   helm install ${RELEASE} ${CHART} \
     --debug \
     --namespace ${NAMESPACE} \
@@ -137,18 +137,10 @@ verify_supported() {
   local db_node_array
   IFS="," read -r -a db_node_array <<<"${INFLUXDB_NODE_NAMES}"
   for node in "${db_node_array[@]}"; do
-    kubectl label node "${node}" 'mysql.standalone.node=enable' --overwrite &>/dev/null || {
-      error "kubectl label node ${node} 'mysql.standalone.node=enable' failed, use kubectl to check reason"
+    kubectl label node "${node}" 'influxdb.standalone.node=enable' --overwrite &>/dev/null || {
+      error "kubectl label node ${node} 'influxdb.standalone.node=enable' failed, use kubectl to check reason"
     }
   done
-
-  if [[ -z "${INFLUXDB_HTTP_PORT}" ]]; then
-    error "INFLUXDB_HTTP_PORT MUST set in environment variable."
-  fi
-
-  if [[ -z "${INFLUXDB_RPC_PORT}" ]]; then
-    error "INFLUXDB_RPC_PORT MUST set in environment variable."
-  fi
 
   if [[ "${HAS_CURL}" != "true" ]]; then
     error "curl is required"
@@ -164,7 +156,7 @@ verify_supported() {
 }
 
 init_log() {
-  INSTALL_LOG_PATH=/tmp/mysql_install-$(date +'%Y-%m-%d_%H-%M-%S').log
+  INSTALL_LOG_PATH=/tmp/influxdb_install-$(date +'%Y-%m-%d_%H-%M-%S').log
   if ! touch "${INSTALL_LOG_PATH}"; then
     error "Create log file ${INSTALL_LOG_PATH} error"
   fi
@@ -189,7 +181,7 @@ main() {
   init_log
   verify_supported
   init_helm_repo
-  install_mysql
+  install_influxdb
   verify_installed
 }
 

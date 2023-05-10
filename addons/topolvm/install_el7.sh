@@ -23,6 +23,7 @@ readonly NAMESPACE="topolvm-system"
 readonly CHART="topolvm/topolvm"
 readonly RELEASE="topolvm"
 readonly TIME_OUT_SECOND="600s"
+readonly FS_TYPE="xfs"
 
 INSTALL_LOG_PATH=""
 
@@ -80,6 +81,9 @@ install_topolvm() {
     --set lvmd.nodeSelector."topolvm\.io/node"="enable" \
     --set node.nodeSelector."topolvm\.io/node"="enable" \
     --set podSecurityPolicy.create=false \
+    --set storageClasses[0].name="topolvm-provisioner-${TOPOLVM_DEVICE_CLASSES_NAME}" \
+    --set storageClasses[0].storageClass.fsType="${FS_TYPE}" \
+    --set storageClasses[0].storageClass.additionalParameters.topolvm.io/device-class="${TOPOLVM_DEVICE_CLASSES_NAME}" \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
     error "Fail to install ${RELEASE}."
@@ -161,19 +165,6 @@ verify_supported() {
   fi
 }
 
-create_storageclass() {
-  info "create storageclass..."
-  local storageclass_name="topolvm-provisioner-${TOPOLVM_DEVICE_CLASSES_NAME}"
-  local device_class_name="${TOPOLVM_DEVICE_CLASSES_NAME}"
-  export storageclass_name
-  export device_class_name
-  curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/topolvm/yaml/storagclass.yaml | envsubst | kubectl apply -f - || {
-    error "kubectl create storageclass fail, check log use kubectl."
-  }
-
-  info "storageclass(${storageclass_name}) Created!"
-}
-
 init_log() {
   INSTALL_LOG_PATH=/tmp/topolvm_install-$(date +'%Y-%m-%d_%H-%M-%S').log
   if ! touch "${INSTALL_LOG_PATH}"; then
@@ -202,7 +193,6 @@ main() {
   init_helm_repo
   install_topolvm
   verify_installed
-  create_storageclass
 }
 
 main

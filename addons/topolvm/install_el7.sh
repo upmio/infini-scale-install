@@ -19,7 +19,9 @@
 #        export TOPOLVM_DEVICE_CLASSES_NAME="hdd"
 #
 
+readonly NAMESPACE="topolvm-system"
 readonly CHART="topolvm/topolvm"
+readonly RELEASE="topolvm"
 readonly TIME_OUT_SECOND="600s"
 readonly FS_TYPE="xfs"
 
@@ -106,13 +108,6 @@ verify_supported() {
   local HAS_CURL
   HAS_CURL="$(type "curl" &>/dev/null && echo true || echo false)"
 
-  if [[ -z "${TOPOLVM_DEVICE_CLASSES_NAME}" ]]; then
-    error "TOPOLVM_DEVICE_CLASSES_NAME MUST set in environment variable."
-  fi
-
-  readonly NAMESPACE="topolvm-${TOPOLVM_DEVICE_CLASSES_NAME}"
-  readonly RELEASE="topolvm-${TOPOLVM_DEVICE_CLASSES_NAME}"
-
   kubectl create namespace ${NAMESPACE}
 
   kubectl label namespace ${NAMESPACE} topolvm.io/webhook=ignore &>/dev/null || {
@@ -125,6 +120,10 @@ verify_supported() {
 
   if [[ -z "${TOPOLVM_VG_NAME}" ]]; then
     error "TOPOLVM_VG_NAME MUST set in environment variable."
+  fi
+
+  if [[ -z "${TOPOLVM_DEVICE_CLASSES_NAME}" ]]; then
+    error "TOPOLVM_DEVICE_CLASSES_NAME MUST set in environment variable."
   fi
 
   if [[ -z "${TOPOLVM_CONTROLLER_NODE_NAMES}" ]]; then

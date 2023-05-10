@@ -55,14 +55,14 @@ curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addo
 等几分钟。 如果所有 topolvm  pod 都在运行，则 topolvm 将成功安装。
 
 ```console
-kubectl get --namespace "topolvm-${TOPOLVM_DEVICE_CLASSES_NAME}" pods -w
+kubectl get --namespace topolvm-system pods -w
 ```
 
 ## 使用 Helm 卸载 Charts
 
 ```console
 # Helm
-helm uninstall "topolvm-${TOPOLVM_DEVICE_CLASSES_NAME}" --namespace "topolvm-${TOPOLVM_DEVICE_CLASSES_NAME}"
+helm uninstall topolvm --namespace topolvm-system
 ```
 
 这将删除与 Charts 关联的所有 Kubernetes 组件并删除发布。

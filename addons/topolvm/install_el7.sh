@@ -16,7 +16,7 @@
 #
 # 4. TOPOLVM_DEVICE_CLASSES_NAME MUST be set as environment variable, for an example:
 #
-#        export TOPOLVM_DEVICE_CLASSES_NAME="ssd"
+#        export TOPOLVM_DEVICE_CLASSES_NAME="hdd"
 #
 
 readonly NAMESPACE="topolvm-system"

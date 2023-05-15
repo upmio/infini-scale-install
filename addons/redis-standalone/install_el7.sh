@@ -27,6 +27,7 @@ readonly RESOURCE_LIMITS_CPU="2"
 readonly RESOURCE_LIMITS_MEMORY="4Gi"
 readonly RESOURCE_REQUESTS_CPU="2"
 readonly RESOURCE_REQUESTS_MEMORY="4Gi"
+readonly REDIS_PORT=6379
 
 INSTALL_LOG_PATH=""
 
@@ -79,7 +80,8 @@ install_redis() {
     --set master.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
     --set global.redis.password=''${REDIS_PWD}'' \
     --set master.count=1 \
-    --set master.containerPorts.redis=6379 \
+    --set master.containerPorts.redis="${REDIS_PORT}" \
+    --set master.service.ports.redis="${REDIS_PORT}" \
     --set master.persistence.storageClass="${REDIS_STORAGECLASS_NAME}" \
     --set master.persistence.size="${REDIS_PVC_SIZE_G}"Gi \
     --set master.nodeAffinityPreset.type="hard" \

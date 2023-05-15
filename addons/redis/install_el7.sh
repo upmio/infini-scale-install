@@ -74,8 +74,8 @@ install_redis() {
 init_helm_repo() {
   helm repo add redisrepo https://haolowkey.github.io/helm-redis &>/dev/null
   info "Start update helm redis repo"
-  if ! helm repo update 2>/dev/null; then
-    error "Helm update redis repo error."
+  if ! helm repo update redisrepo 2>/dev/null; then
+    error "Helm update redisrepo repo error."
   fi
 }
 

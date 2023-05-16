@@ -4,15 +4,7 @@
 
 ## 快速安装指南
 
-### 1. 检查本地磁盘设备
-
-**注意⚠️：每个数据节点都必须保证VolumeGroup 存在，才能部署 carina。**
-
-在LVM PV的工作节点，创建对应与VG_NAME同名的VolumeGroup，用于供应Storageclass的本地PV资源。
-
-**dev_name 是磁盘设备名称，例如 /dev/sdb。**
-
-### 3. 设置必要的环境变量
+### 1. 设置必要的环境变量
 
 CARINA_CONTROLLER_NODE_NAMES：指定控制节点名称，节点名称可以使用","作为分隔符，表示多个节点名称，安装程序会对节点进行label固定安装节点。
 
@@ -29,7 +21,7 @@ export CARINA_SSD_DEV_NAMES="/dev/sdb"
 export CARINA_HDD_DEV_NAMES="/dev/sdc"
 ```
 
-### 4. 运行安装脚本
+### 2. 运行安装脚本
 
 **注意⚠️：如果找不到 Helm3，将自动安装。**
 

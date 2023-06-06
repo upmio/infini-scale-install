@@ -26,7 +26,7 @@ export POSTGRE_USER_NAME="admin"
 export POSTGRE_USER_PWD='password'
 export POSTGRE_STORAGECLASS_NAME="topolvm-provisioner"
 export POSTGRE_PVC_SIZE_G="50"
-export POSTGRE_NODE_NAMES="db-node01,db-node02,db-node03"
+export POSTGRE_NODE_NAMES="db-node01"
 export POSTGRE_PORT="5432"
 ```
 

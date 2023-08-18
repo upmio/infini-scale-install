@@ -9,11 +9,25 @@
 # 2. REDIS_NODE_NAMES MUST be set as environment variable, for an example:
 #
 #        export REDIS_NODE_NAMES="kube-node01"
+#
+# 3. REDIS_STORAGECLASS_NAME MUST be set as environment variable, for an example:
+#
+#        export REDIS_STORAGECLASS_NAME="openebs-lvmsc-hdd"
+#
+# 4. REDIS_PVC_SIZE_G MUST be set as environment variable, for an example:
+#
+#        export REDIS_PVC_SIZE_G="50"
+#
 
 readonly NAMESPACE="redis"
-readonly CHART="redisrepo/redis"
-readonly RELEASE="redis"
+readonly CHART="bitnami/redis"
+readonly RELEASE="redis-standalone"
 readonly TIME_OUT_SECOND="600s"
+readonly RESOURCE_LIMITS_CPU="2"
+readonly RESOURCE_LIMITS_MEMORY="4Gi"
+readonly RESOURCE_REQUESTS_CPU="2"
+readonly RESOURCE_REQUESTS_MEMORY="4Gi"
+readonly REDIS_PORT=6379
 
 INSTALL_LOG_PATH=""
 
@@ -59,10 +73,22 @@ install_redis() {
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --set auth.password=''${REDIS_PWD}'' \
-    --set nodeAffinityPreset.type="hard" \
-    --set nodeAffinityPreset.key="redis\.node" \
-    --set nodeAffinityPreset.values='{enable}' \
+    --set architecture='standalone' \
+    --set master.resources.limits.cpu=''${RESOURCE_LIMITS_CPU}'' \
+    --set master.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \
+    --set master.resources.requests.cpu=''${RESOURCE_REQUESTS_CPU}'' \
+    --set master.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
+    --set global.redis.password=''${REDIS_PWD}'' \
+    --set master.count=1 \
+    --set master.containerPorts.redis="${REDIS_PORT}" \
+    --set master.service.ports.redis="${REDIS_PORT}" \
+    --set master.persistence.storageClass="${REDIS_STORAGECLASS_NAME}" \
+    --set master.persistence.size="${REDIS_PVC_SIZE_G}"Gi \
+    --set master.nodeAffinityPreset.type="hard" \
+    --set master.nodeAffinityPreset.key="redis\.standalone\.node" \
+    --set master.nodeAffinityPreset.values='{enable}' \
+    --set master.podSecurityContext.fsGroup=0 \
+    --set master.containerSecurityContext.runAsUser=0 \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
     error "Fail to install ${RELEASE}."
@@ -72,11 +98,15 @@ install_redis() {
 }
 
 init_helm_repo() {
-  helm repo add redisrepo https://haolowkey.github.io/helm-redis &>/dev/null
-  info "Start update helm redis repo"
-  if ! helm repo update redisrepo 2>/dev/null; then
-    error "Helm update redisrepo repo error."
-  fi
+  info "Start add helm bitnami repo"
+  helm repo add bitnami https://charts.bitnami.com/bitnami &>/dev/null || {
+    error "Helm add bitnami repo error."
+  }
+
+  info "Start update helm bitnami repo"
+  helm repo update bitnami 2>/dev/null || {
+    error "Helm update bitnami repo error."
+  }
 }
 
 verify_supported() {
@@ -98,10 +128,22 @@ verify_supported() {
   local redis_node_array
   IFS="," read -r -a redis_node_array <<<"${REDIS_NODE_NAMES}"
   for node in "${redis_node_array[@]}"; do
-    kubectl label node "${node}" 'redis.node=enable' --overwrite &>/dev/null || {
-      error "kubectl label node ${node} 'redis.node=enable' failed, use kubectl to check reason"
+    kubectl label node "${node}" 'redis.standalone.node=enable' --overwrite &>/dev/null || {
+      error "kubectl label node ${node} 'redis.standalone.node=enable' failed, use kubectl to check reason"
     }
   done
+
+  if [[ -z "${REDIS_STORAGECLASS_NAME}" ]]; then
+    error "REDIS_STORAGECLASS_NAME MUST set in environment variable."
+  fi
+
+  kubectl get storageclasses "${REDIS_STORAGECLASS_NAME}" &>/dev/null || {
+    error "storageclass resources not all ready, use kubectl to check reason"
+  }
+
+  if [[ -z "${REDIS_PVC_SIZE_G}" ]]; then
+    error "REDIS_PVC_SIZE_G MUST set in environment variable."
+  fi
 
   if [[ "${HAS_CURL}" != "true" ]]; then
     error "curl is required"

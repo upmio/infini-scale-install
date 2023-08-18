@@ -26,7 +26,7 @@ export POSTGRE_USER_NAME="admin"
 export POSTGRE_USER_PWD='password'
 export POSTGRE_STORAGECLASS_NAME="topolvm-provisioner"
 export POSTGRE_PVC_SIZE_G="50"
-export POSTGRE_NODE_NAMES="db-node01,db-node02,db-node03"
+export POSTGRE_NODE_NAMES="db-node01"
 export POSTGRE_PORT="5432"
 ```
 
@@ -39,7 +39,7 @@ export POSTGRE_PORT="5432"
 运行安装脚本
 ```console
 # BASH
-curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/postgresql_standalone/install_el7.sh | sh -
+curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/postgresql-standalone/install_el7.sh | sh -
 ```
 
 等几分钟。 如果所有 PostgreSQL pod 都在运行，则 PostgreSQL 将成功安装。
@@ -52,7 +52,7 @@ kubectl get --namespace postgresql pods -w
 
 ```console
 # Helm
-helm uninstall postgresql --namespace postgresql
+helm uninstall postgresql-standalone --namespace postgresql
 ```
 
 这将删除与 Charts 关联的所有 Kubernetes 组件并删除发布。

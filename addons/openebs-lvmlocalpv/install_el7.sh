@@ -164,7 +164,7 @@ verify_installed() {
 }
 
 create_storageclass() {
-
+  info "create storageclass..."
   curl -sSL https://raw.githubusercontent.com/upmio/infini-scale-install/main/addons/openebs-lvmlocalpv/yaml/storageclass.yaml | envsubst | kubectl apply -f - || {
     error "kubectl create storageclass fail, check log use kubectl."
   }

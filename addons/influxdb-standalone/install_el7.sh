@@ -2,43 +2,33 @@
 
 # You must be prepared as follows before run install.sh:
 #
-# 1. MYSQL_PWD MUST be set as environment variable, for an example:
+# 1. INFLUXDB_PWD MUST be set as environment variable, for an example:
 #
-#        export MYSQL_PWD="password"
+#        export INFLUXDB_PWD="password"
 #
-# 2. MYSQL_USER_NAME MUST be set as environment variable, for an example:
+# 2. INFLUXDB_STORAGECLASS_NAME MUST be set as environment variable, for an example:
 #
-#        export MYSQL_USER_NAME="admin"
+#        export INFLUXDB_STORAGECLASS_NAME=""
 #
-# 3. MYSQL_USER_PWD MUST be set as environment variable, for an example:
+# 3. INFLUXDB_PVC_SIZE_G MUST be set as environment variable, for an example:
 #
-#        export MYSQL_USER_PWD="password"
+#        export INFLUXDB_PVC_SIZE_G="50"
 #
-# 4. MYSQL_STORAGECLASS_NAME MUST be set as environment variable, for an example:
+# 4. INFLUXDB_NODE_NAMES MUST be set as environment variable, for an example:
 #
-#        export MYSQL_STORAGECLASS_NAME=""
-#
-# 5. MYSQL_PVC_SIZE_G MUST be set as environment variable, for an example:
-#
-#        export MYSQL_PVC_SIZE_G="50"
-#
-# 6. MYSQL_NODE_NAMES MUST be set as environment variable, for an example:
-#
-#        export MYSQL_NODE_NAMES="kube-node01"
-#
-# 7. MYSQL_PORT MUST be set as environment variable, for an example:
-#
-#        export MYSQL_PORT="3306"
+#        export INFLUXDB_NODE_NAMES="kube-node01"
 #
 
-readonly NAMESPACE="mysql"
-readonly CHART="bitnami/mysql"
-readonly RELEASE="mysql_standalone"
+readonly NAMESPACE="influxdb"
+readonly CHART="bitnami/influxdb"
+readonly RELEASE="influxdb-standalone"
 readonly TIME_OUT_SECOND="600s"
 readonly RESOURCE_LIMITS_CPU="2"
 readonly RESOURCE_LIMITS_MEMORY="4Gi"
 readonly RESOURCE_REQUESTS_CPU="2"
 readonly RESOURCE_REQUESTS_MEMORY="4Gi"
+readonly INFLUXDB_HTTP_PORT="8086"
+readonly INFLUXDB_RPC_PORT="8088"
 
 INSTALL_LOG_PATH=""
 
@@ -74,32 +64,28 @@ install_helm() {
   info "Helm install completed"
 }
 
-install_mysql() {
-  # check if mysql already installed
+install_influxdb() {
+  # check if influxdb already installed
   if helm status ${RELEASE} -n ${NAMESPACE} &>/dev/null; then
     error "${RELEASE} already installed. Use helm remove it first"
   fi
-  info "Install mysql, It might take a long time..."
+  info "Install influxdb, It might take a long time..."
   helm install ${RELEASE} ${CHART} \
     --debug \
     --namespace ${NAMESPACE} \
     --create-namespace \
-    --set architecture='standalone' \
-    --set primary.resources.limits.cpu=''${RESOURCE_LIMITS_CPU}'' \
-    --set primary.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \
-    --set primary.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
-    --set primary.resources.requests.cpu=''${RESOURCE_REQUESTS_CPU}'' \
-    --set auth.rootPassword=''"${MYSQL_PWD}"'' \
-    --set auth.username=''"${MYSQL_USER_NAME}"'' \
-    --set auth.password=''"${MYSQL_USER_PWD}"'' \
-    --set primary.service.ports.mysql=''"${MYSQL_PORT}"'' \
-    --set primary.persistence.storageClass=''"${MYSQL_STORAGECLASS_NAME}"'' \
-    --set primary.persistence.size=''"${MYSQL_PVC_SIZE_G}Gi"'' \
-    --set primary.nodeAffinityPreset.type="hard" \
-    --set primary.nodeAffinityPreset.key="mysql\.standalone\.node" \
-    --set primary.nodeAffinityPreset.values='{enable}' \
-    --set primary.podSecurityContext.fsGroup=0 \
-    --set primary.containerSecurityContext.runAsUser=0 \
+    --set auth.admin.password=''"${INFLUXDB_PWD}"'' \
+    --set influxdb.resources.limits.cpu=''${RESOURCE_LIMITS_CPU}'' \
+    --set influxdb.resources.limits.memory=''${RESOURCE_LIMITS_MEMORY}'' \
+    --set influxdb.resources.requests.cpu=''${RESOURCE_REQUESTS_CPU}'' \
+    --set influxdb.resources.requests.memory=''${RESOURCE_REQUESTS_MEMORY}'' \
+    --set influxdb.containerPorts.http=''"${INFLUXDB_HTTP_PORT}"'' \
+    --set influxdb.containerPorts.rpc=''"${INFLUXDB_RPC_PORT}"'' \
+    --set influxdb.nodeAffinityPreset.type="hard" \
+    --set influxdb.nodeAffinityPreset.key="influxdb\.standalone\.node" \
+    --set influxdb.nodeAffinityPreset.values='{enable}' \
+    --set persistence.storageClass=''"${INFLUXDB_STORAGECLASS_NAME}"'' \
+    --set persistence.size=''"${INFLUXDB_PVC_SIZE_G}Gi"'' \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
     error "Fail to install ${RELEASE}."
@@ -109,11 +95,15 @@ install_mysql() {
 }
 
 init_helm_repo() {
-  helm repo add bitnami https://charts.bitnami.com/bitnami &>/dev/null
+  info "Start add helm bitnami repo"
+  helm repo add bitnami https://charts.bitnami.com/bitnami &>/dev/null || {
+    error "Helm add bitnami repo error."
+  }
+
   info "Start update helm bitnami repo"
-  if ! helm repo update bitnami 2>/dev/null; then
+  helm repo update bitnami 2>/dev/null || {
     error "Helm update bitnami repo error."
-  fi
+  }
 }
 
 verify_supported() {
@@ -124,45 +114,33 @@ verify_supported() {
   local HAS_CURL
   HAS_CURL="$(type "curl" &>/dev/null && echo true || echo false)"
 
-  if [[ -z "${MYSQL_PWD}" ]]; then
-    error "MYSQL_PWD MUST set in environment variable."
+  if [[ -z "${INFLUXDB_PWD}" ]]; then
+    error "INFLUXDB_PWD MUST set in environment variable."
   fi
 
-  if [[ -z "${MYSQL_USER_NAME}" ]]; then
-    error "MYSQL_USER_NAME MUST set in environment variable."
+  if [[ -z "${INFLUXDB_STORAGECLASS_NAME}" ]]; then
+    error "INFLUXDB_STORAGECLASS_NAME MUST set in environment variable."
   fi
 
-  if [[ -z "${MYSQL_USER_PWD}" ]]; then
-    error "MYSQL_USER_PWD MUST set in environment variable."
-  fi
-
-  if [[ -z "${MYSQL_STORAGECLASS_NAME}" ]]; then
-    error "MYSQL_STORAGECLASS_NAME MUST set in environment variable."
-  fi
-
-  kubectl get storageclasses "${MYSQL_STORAGECLASS_NAME}" &>/dev/null || {
+  kubectl get storageclasses "${INFLUXDB_STORAGECLASS_NAME}" &>/dev/null || {
     error "storageclass resources not all ready, use kubectl to check reason"
   }
 
-  if [[ -z "${MYSQL_PVC_SIZE_G}" ]]; then
-    error "DB_PVC_SIZE_G MUST set in environment variable."
+  if [[ -z "${INFLUXDB_PVC_SIZE_G}" ]]; then
+    error "INFLUXDB_PVC_SIZE_G MUST set in environment variable."
   fi
 
-  if [[ -z "${MYSQL_NODE_NAMES}" ]]; then
-    error "DB_NODE_NAMES MUST set in environment variable."
+  if [[ -z "${INFLUXDB_NODE_NAMES}" ]]; then
+    error "INFLUXDB_NODE_NAMES MUST set in environment variable."
   fi
 
   local db_node_array
-  IFS="," read -r -a db_node_array <<<"${MYSQL_NODE_NAMES}"
+  IFS="," read -r -a db_node_array <<<"${INFLUXDB_NODE_NAMES}"
   for node in "${db_node_array[@]}"; do
-    kubectl label node "${node}" 'mysql.standalone.node=enable' --overwrite &>/dev/null || {
-      error "kubectl label node ${node} 'mysql.node=enable' failed, use kubectl to check reason"
+    kubectl label node "${node}" 'influxdb.standalone.node=enable' --overwrite &>/dev/null || {
+      error "kubectl label node ${node} 'influxdb.standalone.node=enable' failed, use kubectl to check reason"
     }
   done
-
-  if [[ -z "${MYSQL_PORT}" ]]; then
-    error "MYSQL_PORT MUST set in environment variable."
-  fi
 
   if [[ "${HAS_CURL}" != "true" ]]; then
     error "curl is required"
@@ -178,7 +156,7 @@ verify_supported() {
 }
 
 init_log() {
-  INSTALL_LOG_PATH=/tmp/mysql_install-$(date +'%Y-%m-%d_%H-%M-%S').log
+  INSTALL_LOG_PATH=/tmp/influxdb_install-$(date +'%Y-%m-%d_%H-%M-%S').log
   if ! touch "${INSTALL_LOG_PATH}"; then
     error "Create log file ${INSTALL_LOG_PATH} error"
   fi
@@ -203,7 +181,7 @@ main() {
   init_log
   verify_supported
   init_helm_repo
-  install_mysql
+  install_influxdb
   verify_installed
 }
 

@@ -16,13 +16,14 @@
 #
 # 4. TOPOLVM_DEVICE_CLASSES_NAME MUST be set as environment variable, for an example:
 #
-#        export TOPOLVM_DEVICE_CLASSES_NAME="ssd"
+#        export TOPOLVM_DEVICE_CLASSES_NAME="hdd"
 #
 
 readonly NAMESPACE="topolvm-system"
 readonly CHART="topolvm/topolvm"
 readonly RELEASE="topolvm"
 readonly TIME_OUT_SECOND="600s"
+readonly FS_TYPE="xfs"
 
 INSTALL_LOG_PATH=""
 
@@ -80,6 +81,9 @@ install_topolvm() {
     --set lvmd.nodeSelector."topolvm\.io/node"="enable" \
     --set node.nodeSelector."topolvm\.io/node"="enable" \
     --set podSecurityPolicy.create=false \
+    --set storageClasses[0].name="topolvm-provisioner-${TOPOLVM_DEVICE_CLASSES_NAME}" \
+    --set storageClasses[0].storageClass.fsType="${FS_TYPE}" \
+    --set storageClasses[0].storageClass.additionalParameters."topolvm\.io/device-class"="${TOPOLVM_DEVICE_CLASSES_NAME}" \
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
     error "Fail to install ${RELEASE}."

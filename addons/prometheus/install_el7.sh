@@ -1,6 +1,6 @@
 #!/usr/bin/env bash 
 
-readonly NAMESPACE="promethues"
+readonly NAMESPACE="prometheus"
 readonly CHART="prometheus-community/kube-prometheus-stack"
 readonly RELEASE="prometheus"
 readonly TIME_OUT_SECOND="600s"
@@ -45,14 +45,33 @@ install_prometheus() {
     error "${RELEASE} already installed. Use helm remove it first"
   fi
   info "Install prometheus, It might take a long time..."
-  helm install ${RELEASE} ${CHART} \
-    --debug \
-    --namespace ${NAMESPACE} \
-    --create-namespace \
-    --set prometheusOperator.admissionWebhooks.patch.image.registry=docker.io \
-    --set prometheusOperator.admissionWebhooks.patch.image.repository=dyrnq/kube-webhook-certgen \
-    --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
-    --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+  helm upgrade ${RELEASE} ${CHART} \
+  --debug \
+  --namespace ${NAMESPACE} \
+  --create-namespace \
+  --install \
+  --set prometheusOperator.admissionWebhooks.patch.image.registry=docker.io \
+  --set prometheusOperator.admissionWebhooks.patch.image.repository=dyrnq/kube-webhook-certgen \
+  --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+  --set prometheusOperator.prometheusConfigReloader.admissionWebhooks.patch.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
+  --set prometheusOperator.prometheusConfigReloader.admissionWebhooks.patch.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
+  --set prometheusOperator.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
+  --set prometheusOperator.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
+  --set prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.storageClassName="${PROM_STORAGECLASS_NAME}}" \
+  --set prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.accessModes[0]=ReadWriteOnce \
+  --set prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage=$PROM_PVC_SIZE_G}Gi \
+  --set prometheus.prometheusSpec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
+  --set prometheus.prometheusSpec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
+  --set alertmanager.alertmanagerSpec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
+  --set alertmanager.alertmanagerSpec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
+  --set grafana.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
+  --set grafana.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
+  --set kube-state-metrics.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
+  --set kube-state-metrics.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists
+  --set kube-state-metrics.image.registry=docker.io \
+  --set kube-state-metrics.image.repository=dbscale/kube-state-metrics \
+  --set kube-state-metrics.image.tag="v2.9.2"
     --timeout $TIME_OUT_SECOND \
     --wait 2>&1 | grep "\[debug\]" | awk '{$1="[Helm]"; $2=""; print }' | tee -a "${INSTALL_LOG_PATH}" || {
     error "Fail to install ${RELEASE}."
@@ -88,6 +107,31 @@ verify_supported() {
   if [[ "${HAS_KUBECTL}" != "true" ]]; then
     install_kubectl
   fi
+
+  if [[ -z "${PROM_STORAGECLASS_NAME}" ]]; then
+    error "PROM_STORAGECLASS_NAME MUST set in environment variable."
+  fi
+
+  kubectl get storageclasses "${PROM_STORAGECLASS_NAME}" &>/dev/null || {
+    error "storageclass resources not all ready, use kubectl to check reason"
+  }
+
+  if [[ -z "${PROM_PVC_SIZE_G}" ]]; then
+    error "PROM_PVC_SIZE_G MUST set in environment variable."
+  fi
+
+  if [[ -z "${PROM_NODE_NAMES}" ]]; then
+    error "PROM_NODE_NAMES MUST set in environment variable."
+  fi
+
+  local db_node_array
+  IFS="," read -r -a db_node_array <<<"${PROM_NODE_NAMES}"
+  for node in "${PROM_node_array[@]}"; do
+    kubectl label node "${node}" 'prometheus.node=enable' --overwrite &>/dev/null || {
+      error "kubectl label node ${node} 'prometheus.node=enable' failed, use kubectl to check reason"
+    }
+  done
+
 }
 
 init_log() {

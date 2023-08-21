@@ -53,14 +53,14 @@ install_prometheus() {
   --set prometheusOperator.admissionWebhooks.patch.image.registry=docker.io \
   --set prometheusOperator.admissionWebhooks.patch.image.repository=dyrnq/kube-webhook-certgen \
   --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
-  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
   --set prometheusOperator.prometheusConfigReloader.admissionWebhooks.patch.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
   --set prometheusOperator.prometheusConfigReloader.admissionWebhooks.patch.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
   --set prometheusOperator.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
   --set prometheusOperator.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
-  --set prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.storageClassName="${PROM_STORAGECLASS_NAME}}" \
+  --set prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.storageClassName="${PROM_STORAGECLASS_NAME}" \
   --set prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.accessModes[0]=ReadWriteOnce \
-  --set prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage=$PROM_PVC_SIZE_G}Gi \
+  --set prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage=${PROM_PVC_SIZE_G}Gi \
   --set prometheus.prometheusSpec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
   --set prometheus.prometheusSpec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
   --set alertmanager.alertmanagerSpec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
@@ -68,7 +68,7 @@ install_prometheus() {
   --set grafana.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
   --set grafana.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
   --set kube-state-metrics.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=prometheus.node \
-  --set kube-state-metrics.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists
+  --set kube-state-metrics.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=Exists \
   --set kube-state-metrics.image.registry=docker.io \
   --set kube-state-metrics.image.repository=dbscale/kube-state-metrics \
   --set kube-state-metrics.image.tag="v2.9.2"
